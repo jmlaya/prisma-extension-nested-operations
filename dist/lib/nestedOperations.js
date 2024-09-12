@@ -6,6 +6,7 @@ const execution_1 = require("./utils/execution");
 const params_1 = require("./utils/params");
 const targets_1 = require("./utils/targets");
 const results_1 = require("./utils/results");
+const dmmf_1 = require("./utils/dmmf");
 function isFulfilled(result) {
     return result.status === "fulfilled";
 }
@@ -14,10 +15,13 @@ function isRejected(result) {
 }
 function withNestedOperations({ $rootOperation, $allNestedOperations, dmmf }) {
     console.log('withNestedOperations:', dmmf);
+    if (!!dmmf) {
+        (0, dmmf_1.setDmmf)(dmmf);
+    }
     return async (rootParams) => {
         let calls = [];
         try {
-            const executionResults = await Promise.allSettled((0, extractNestedOperations_1.extractNestedOperations)({ ...rootParams, dmmf }).map((nestedOperation) => (0, execution_1.executeOperation)($allNestedOperations, nestedOperation.params, nestedOperation.target)));
+            const executionResults = await Promise.allSettled((0, extractNestedOperations_1.extractNestedOperations)(rootParams).map((nestedOperation) => (0, execution_1.executeOperation)($allNestedOperations, nestedOperation.params, nestedOperation.target)));
             // populate middlewareCalls with successful calls first so we can resolve
             // next promises if we find a rejection
             calls = executionResults.filter(isFulfilled).map(({ value }) => value);

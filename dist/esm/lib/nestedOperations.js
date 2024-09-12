@@ -3,6 +3,7 @@ import { executeOperation } from "./utils/execution";
 import { buildArgsFromCalls } from "./utils/params";
 import { buildTargetRelationPath } from "./utils/targets";
 import { addIdSymbolsToResult, getRelationResult, stripIdSymbolsFromResult, updateResultRelation, } from "./utils/results";
+import { setDmmf } from "./utils/dmmf";
 function isFulfilled(result) {
     return result.status === "fulfilled";
 }
@@ -11,10 +12,13 @@ function isRejected(result) {
 }
 export function withNestedOperations({ $rootOperation, $allNestedOperations, dmmf }) {
     console.log('withNestedOperations:', dmmf);
+    if (!!dmmf) {
+        setDmmf(dmmf);
+    }
     return async (rootParams) => {
         let calls = [];
         try {
-            const executionResults = await Promise.allSettled(extractNestedOperations({ ...rootParams, dmmf }).map((nestedOperation) => executeOperation($allNestedOperations, nestedOperation.params, nestedOperation.target)));
+            const executionResults = await Promise.allSettled(extractNestedOperations(rootParams).map((nestedOperation) => executeOperation($allNestedOperations, nestedOperation.params, nestedOperation.target)));
             // populate middlewareCalls with successful calls first so we can resolve
             // next promises if we find a rejection
             calls = executionResults.filter(isFulfilled).map(({ value }) => value);

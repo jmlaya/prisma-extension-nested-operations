@@ -24,7 +24,7 @@ exports.fieldsByWriteOperation = {
     deleteMany: [],
 };
 function extractRelationLogicalWhereOperations(params, parentTarget, parentOperations = []) {
-    const relations = (0, relations_1.getRelationsByModel)(params.dmmf)[params.model || ""] || [];
+    const relations = (0, relations_1.getRelationsByModel)()[params.model || ""] || [];
     const nestedWhereOperations = [];
     const operationsPath = [];
     parentOperations.forEach(({ logicalOperator, index }) => {
@@ -53,7 +53,7 @@ function extractRelationLogicalWhereOperations(params, parentTarget, parentOpera
         });
         relations.forEach((relation) => {
             const model = relation.type;
-            const oppositeRelation = (0, relations_1.findOppositeRelation)(relation, params.dmmf);
+            const oppositeRelation = (0, relations_1.findOppositeRelation)(relation);
             if (Array.isArray(logicalArg)) {
                 logicalArg.forEach((where, index) => {
                     const arg = where === null || where === void 0 ? void 0 : where[relation.name];
@@ -171,7 +171,7 @@ function extractRelationLogicalWhereOperations(params, parentTarget, parentOpera
 }
 exports.extractRelationLogicalWhereOperations = extractRelationLogicalWhereOperations;
 function extractRelationWhereOperations(params, parentTarget) {
-    const relations = (0, relations_1.getRelationsByModel)(params.dmmf)[params.model || ""] || [];
+    const relations = (0, relations_1.getRelationsByModel)()[params.model || ""] || [];
     const nestedWhereOperations = extractRelationLogicalWhereOperations(params, parentTarget);
     relations.forEach((relation) => {
         const model = relation.type;
@@ -223,11 +223,11 @@ function extractRelationWhereOperations(params, parentTarget) {
             });
         });
     });
-    return nestedWhereOperations.concat(nestedWhereOperations.flatMap((nestedOperationInfo) => extractRelationWhereOperations({ ...nestedOperationInfo.params, dmmf: params.dmmf }, nestedOperationInfo.target)));
+    return nestedWhereOperations.concat(nestedWhereOperations.flatMap((nestedOperationInfo) => extractRelationWhereOperations(nestedOperationInfo.params, nestedOperationInfo.target)));
 }
 exports.extractRelationWhereOperations = extractRelationWhereOperations;
 function extractRelationWriteOperations(params, parentTarget) {
-    const relations = (0, relations_1.getRelationsByModel)(params.dmmf)[params.model || ""] || [];
+    const relations = (0, relations_1.getRelationsByModel)()[params.model || ""] || [];
     if (!(0, operations_1.isWriteOperation)(params.operation))
         return [];
     const nestedWriteOperations = [];
@@ -292,11 +292,11 @@ function extractRelationWriteOperations(params, parentTarget) {
             });
         });
     });
-    return nestedWriteOperations.concat(nestedWriteOperations.flatMap((nestedOperationInfo) => extractRelationWriteOperations({ ...nestedOperationInfo.params, dmmf: params.dmmf }, nestedOperationInfo.target)));
+    return nestedWriteOperations.concat(nestedWriteOperations.flatMap((nestedOperationInfo) => extractRelationWriteOperations(nestedOperationInfo.params, nestedOperationInfo.target)));
 }
 exports.extractRelationWriteOperations = extractRelationWriteOperations;
 function extractRelationReadOperations(params, parentTarget) {
-    const relations = (0, relations_1.getRelationsByModel)(params.dmmf)[params.model || ""] || [];
+    const relations = (0, relations_1.getRelationsByModel)()[params.model || ""] || [];
     const nestedOperations = [];
     relations.forEach((relation) => {
         const model = relation.type;
@@ -341,7 +341,7 @@ function extractRelationReadOperations(params, parentTarget) {
                     },
                 };
                 nestedOperations.push(whereOperationInfo);
-                nestedOperations.push(...extractRelationWhereOperations({ ...whereOperationInfo.params, dmmf: params.dmmf }, whereOperationInfo.target));
+                nestedOperations.push(...extractRelationWhereOperations(whereOperationInfo.params, whereOperationInfo.target));
             }
             // push select nested in an include
             if (operation === "include" && arg.select) {
@@ -384,12 +384,12 @@ function extractRelationReadOperations(params, parentTarget) {
                         },
                     };
                     nestedOperations.push(whereOperationInfo);
-                    nestedOperations.push(...extractRelationWhereOperations({ ...whereOperationInfo.params, dmmf: params.dmmf }, whereOperationInfo.target));
+                    nestedOperations.push(...extractRelationWhereOperations(whereOperationInfo.params, whereOperationInfo.target));
                 }
             }
         });
     });
-    return nestedOperations.concat(nestedOperations.flatMap((nestedOperation) => extractRelationReadOperations({ ...nestedOperation.params, dmmf: params.dmmf }, nestedOperation.target)));
+    return nestedOperations.concat(nestedOperations.flatMap((nestedOperation) => extractRelationReadOperations(nestedOperation.params, nestedOperation.target)));
 }
 exports.extractRelationReadOperations = extractRelationReadOperations;
 function extractNestedOperations(params) {

@@ -1,22 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findOppositeRelation = exports.getRelationsByModel = void 0;
-const client_1 = require("@prisma/client");
-function getRelationsByModel(dmmf) {
-    const prismaDmmf = dmmf || client_1.Prisma.dmmf;
-    if (!prismaDmmf) {
-        throw new Error("Prisma DMMF not found, please generate Prisma client using `npx prisma generate`");
-    }
+const dmmf_1 = require("./dmmf");
+function getRelationsByModel() {
+    const dmmf = (0, dmmf_1.getDmmf)();
     const relationsByModel = {};
-    prismaDmmf.datamodel.models.forEach((model) => {
+    dmmf.datamodel.models.forEach((model) => {
         relationsByModel[model.name] = model.fields.filter((field) => field.kind === "object" && field.relationName);
     });
     return relationsByModel;
 }
 exports.getRelationsByModel = getRelationsByModel;
-function findOppositeRelation(relation, dmmf) {
-    console.log('findOppositeRelation:', dmmf);
-    const parentRelations = getRelationsByModel(dmmf)[relation.type] || [];
+function findOppositeRelation(relation) {
+    const parentRelations = getRelationsByModel()[relation.type] || [];
     const oppositeRelation = parentRelations.find((parentRelation) => parentRelation !== relation &&
         parentRelation.relationName === relation.relationName);
     if (!oppositeRelation) {

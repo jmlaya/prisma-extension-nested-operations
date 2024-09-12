@@ -51,7 +51,7 @@ export function extractRelationLogicalWhereOperations<
   parentTarget?: Target,
   parentOperations: { logicalOperator: LogicalOperator; index?: number }[] = []
 ): NestedOperationInfo[] {
-  const relations = getRelationsByModel(params.dmmf)[params.model || ""] || [];
+  const relations = getRelationsByModel()[params.model || ""] || [];
   const nestedWhereOperations: NestedOperationInfo[] = [];
 
   const operationsPath: string[] = [];
@@ -87,7 +87,7 @@ export function extractRelationLogicalWhereOperations<
 
     relations.forEach((relation) => {
       const model = relation.type as Prisma.ModelName;
-      const oppositeRelation = findOppositeRelation(relation, params.dmmf);
+      const oppositeRelation = findOppositeRelation(relation);
 
       if (Array.isArray(logicalArg)) {
         logicalArg.forEach((where, index) => {
@@ -225,7 +225,7 @@ export function extractRelationLogicalWhereOperations<
 export function extractRelationWhereOperations<
   ExtArgs extends Types.Extensions.InternalArgs = Types.Extensions.DefaultArgs
 >(params: NestedParams<ExtArgs>, parentTarget?: Target): NestedOperationInfo[] {
-  const relations = getRelationsByModel(params.dmmf)[params.model || ""] || [];
+  const relations = getRelationsByModel()[params.model || ""] || [];
 
   const nestedWhereOperations = extractRelationLogicalWhereOperations(
     params,
@@ -289,7 +289,7 @@ export function extractRelationWhereOperations<
   return nestedWhereOperations.concat(
     nestedWhereOperations.flatMap((nestedOperationInfo) =>
       extractRelationWhereOperations(
-        { ...nestedOperationInfo.params, dmmf: params.dmmf },
+        nestedOperationInfo.params,
         nestedOperationInfo.target
       )
     )
@@ -299,7 +299,7 @@ export function extractRelationWhereOperations<
 export function extractRelationWriteOperations<
   ExtArgs extends Types.Extensions.InternalArgs = Types.Extensions.DefaultArgs
 >(params: NestedParams<ExtArgs>, parentTarget?: Target): NestedOperationInfo[] {
-  const relations = getRelationsByModel(params.dmmf)[params.model || ""] || [];
+  const relations = getRelationsByModel()[params.model || ""] || [];
 
   if (!isWriteOperation(params.operation)) return [];
 
@@ -379,7 +379,7 @@ export function extractRelationWriteOperations<
   return nestedWriteOperations.concat(
     nestedWriteOperations.flatMap((nestedOperationInfo) =>
       extractRelationWriteOperations(
-        { ...nestedOperationInfo.params, dmmf: params.dmmf },
+        nestedOperationInfo.params,
         nestedOperationInfo.target
       )
     )
@@ -389,7 +389,7 @@ export function extractRelationWriteOperations<
 export function extractRelationReadOperations<
   ExtArgs extends Types.Extensions.InternalArgs = Types.Extensions.DefaultArgs
 >(params: NestedParams<ExtArgs>, parentTarget?: Target): NestedOperationInfo[] {
-  const relations = getRelationsByModel(params.dmmf)[params.model || ""] || [];
+  const relations = getRelationsByModel()[params.model || ""] || [];
   const nestedOperations: NestedOperationInfo[] = [];
 
   relations.forEach((relation) => {
@@ -439,7 +439,7 @@ export function extractRelationReadOperations<
         nestedOperations.push(whereOperationInfo);
         nestedOperations.push(
           ...extractRelationWhereOperations(
-            { ...whereOperationInfo.params, dmmf: params.dmmf },
+            whereOperationInfo.params,
             whereOperationInfo.target
           )
         );
@@ -490,7 +490,7 @@ export function extractRelationReadOperations<
           nestedOperations.push(whereOperationInfo);
           nestedOperations.push(
             ...extractRelationWhereOperations(
-              { ...whereOperationInfo.params, dmmf: params.dmmf },
+              whereOperationInfo.params,
               whereOperationInfo.target
             )
           );
@@ -502,7 +502,7 @@ export function extractRelationReadOperations<
   return nestedOperations.concat(
     nestedOperations.flatMap((nestedOperation) =>
       extractRelationReadOperations(
-        { ...nestedOperation.params, dmmf: params.dmmf },
+        nestedOperation.params,
         nestedOperation.target
       )
     )

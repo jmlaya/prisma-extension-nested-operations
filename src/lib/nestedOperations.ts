@@ -12,6 +12,7 @@ import {
   stripIdSymbolsFromResult,
   updateResultRelation,
 } from "./utils/results";
+import { setDmmf } from "./utils/dmmf";
 
 type NonNullable<T> = Exclude<T, null | undefined>;
 
@@ -45,13 +46,17 @@ export function withNestedOperations<
 }): typeof $rootOperation {
   console.log('withNestedOperations:', dmmf);
 
+  if(!!dmmf) {
+    setDmmf(dmmf);
+  }
+
   return async (rootParams) => {
     let calls: OperationCall<ExtArgs>[] = [];
 
     try {
       const executionResults = await Promise.allSettled(
         extractNestedOperations(
-          { ...rootParams, dmmf } as NestedParams<ExtArgs>
+          rootParams as NestedParams<ExtArgs>
         ).map((nestedOperation) =>
           executeOperation(
             $allNestedOperations,
