@@ -9,6 +9,6 @@ export declare function withNestedOperations<ExtArgs extends Types.Extensions.In
         };
     }, Prisma.TypeMap<ExtArgs>>["$allModels"]["$allOperations"]>;
     $allNestedOperations: (params: NestedParams<ExtArgs>) => Promise<any>;
-    dmmf: typeof Prisma.dmmf;
+    dmmf?: typeof Prisma.dmmf;
 }): typeof $rootOperation;
 export {};

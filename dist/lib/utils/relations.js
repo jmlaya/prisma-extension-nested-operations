@@ -15,6 +15,7 @@ function getRelationsByModel(dmmf) {
 }
 exports.getRelationsByModel = getRelationsByModel;
 function findOppositeRelation(relation, dmmf) {
+    console.log('findOppositeRelation:', dmmf);
     const parentRelations = getRelationsByModel(dmmf)[relation.type] || [];
     const oppositeRelation = parentRelations.find((parentRelation) => parentRelation !== relation &&
         parentRelation.relationName === relation.relationName);

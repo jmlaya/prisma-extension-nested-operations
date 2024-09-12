@@ -43,6 +43,8 @@ export function withNestedOperations<
   $allNestedOperations: (params: NestedParams<ExtArgs>) => Promise<any>;
   dmmf?: typeof Prisma.dmmf,
 }): typeof $rootOperation {
+  console.log('withNestedOperations:', dmmf);
+
   return async (rootParams) => {
     let calls: OperationCall<ExtArgs>[] = [];
 

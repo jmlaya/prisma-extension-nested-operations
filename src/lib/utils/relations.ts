@@ -25,7 +25,7 @@ export function getRelationsByModel(dmmf?: typeof Prisma.dmmf): Record<string, P
 
 
 export function findOppositeRelation(relation: Prisma.DMMF.Field, dmmf?: typeof Prisma.dmmf): Prisma.DMMF.Field {
-  
+  console.log('findOppositeRelation:', dmmf);
   const parentRelations =
     getRelationsByModel(dmmf)[relation.type as Prisma.ModelName] || [];
 

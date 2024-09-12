@@ -10,6 +10,7 @@ function isRejected(result) {
     return result.status === "rejected";
 }
 export function withNestedOperations({ $rootOperation, $allNestedOperations, dmmf }) {
+    console.log('withNestedOperations:', dmmf);
     return async (rootParams) => {
         let calls = [];
         try {
