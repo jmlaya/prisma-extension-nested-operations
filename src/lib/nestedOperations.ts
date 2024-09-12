@@ -32,6 +32,7 @@ export function withNestedOperations<
 >({
   $rootOperation,
   $allNestedOperations,
+  dmmf
 }: {
   $rootOperation: NonNullable<
     Types.Extensions.DynamicQueryExtensionArgs<
@@ -40,6 +41,7 @@ export function withNestedOperations<
     >["$allModels"]["$allOperations"]
   >;
   $allNestedOperations: (params: NestedParams<ExtArgs>) => Promise<any>;
+  dmmf?: typeof Prisma.dmmf,
 }): typeof $rootOperation {
   return async (rootParams) => {
     let calls: OperationCall<ExtArgs>[] = [];
@@ -47,7 +49,7 @@ export function withNestedOperations<
     try {
       const executionResults = await Promise.allSettled(
         extractNestedOperations(
-          rootParams as NestedParams<ExtArgs>
+          { ...rootParams, dmmf } as NestedParams<ExtArgs>
         ).map((nestedOperation) =>
           executeOperation(
             $allNestedOperations,
