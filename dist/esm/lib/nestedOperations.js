@@ -11,7 +11,6 @@ function isRejected(result) {
     return result.status === "rejected";
 }
 export function withNestedOperations({ $rootOperation, $allNestedOperations, dmmf }) {
-    console.log('withNestedOperations:', dmmf);
     if (!!dmmf) {
         setDmmf(dmmf);
     }

@@ -14,7 +14,6 @@ function isRejected(result) {
     return result.status === "rejected";
 }
 function withNestedOperations({ $rootOperation, $allNestedOperations, dmmf }) {
-    console.log('withNestedOperations:', dmmf);
     if (!!dmmf) {
         (0, dmmf_1.setDmmf)(dmmf);
     }
