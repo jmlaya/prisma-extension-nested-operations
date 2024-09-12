@@ -16,8 +16,7 @@
     "typecheck": "npm run build:cjs -- --noEmit && npm run build:esm -- --noEmit",
     "validate": "prisma generate && kcd-scripts validate lint,typecheck,test",
     "semantic-release": "semantic-release",
-    "doctoc": "doctoc .",
-    "postinstall": "npm run build"
+    "doctoc": "doctoc ."
   },
   "files": [
     "dist"
