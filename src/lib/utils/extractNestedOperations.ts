@@ -289,7 +289,7 @@ export function extractRelationWhereOperations<
   return nestedWhereOperations.concat(
     nestedWhereOperations.flatMap((nestedOperationInfo) =>
       extractRelationWhereOperations(
-        nestedOperationInfo.params,
+        { ...nestedOperationInfo.params, dmmf: params.dmmf },
         nestedOperationInfo.target
       )
     )
@@ -379,7 +379,7 @@ export function extractRelationWriteOperations<
   return nestedWriteOperations.concat(
     nestedWriteOperations.flatMap((nestedOperationInfo) =>
       extractRelationWriteOperations(
-        nestedOperationInfo.params,
+        { ...nestedOperationInfo.params, dmmf: params.dmmf },
         nestedOperationInfo.target
       )
     )
@@ -439,7 +439,7 @@ export function extractRelationReadOperations<
         nestedOperations.push(whereOperationInfo);
         nestedOperations.push(
           ...extractRelationWhereOperations(
-            whereOperationInfo.params,
+            { ...whereOperationInfo.params, dmmf: params.dmmf },
             whereOperationInfo.target
           )
         );
@@ -490,7 +490,7 @@ export function extractRelationReadOperations<
           nestedOperations.push(whereOperationInfo);
           nestedOperations.push(
             ...extractRelationWhereOperations(
-              whereOperationInfo.params,
+              { ...whereOperationInfo.params, dmmf: params.dmmf },
               whereOperationInfo.target
             )
           );
@@ -502,7 +502,7 @@ export function extractRelationReadOperations<
   return nestedOperations.concat(
     nestedOperations.flatMap((nestedOperation) =>
       extractRelationReadOperations(
-        nestedOperation.params,
+        { ...nestedOperation.params, dmmf: params.dmmf },
         nestedOperation.target
       )
     )
